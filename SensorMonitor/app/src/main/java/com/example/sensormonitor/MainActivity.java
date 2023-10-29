@@ -289,21 +289,38 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 'Append' each data to the csv.
-        try (FileWriter fw = new FileWriter(new File(classDir, "linear.csv"), true)) {
-            fw.write(String.valueOf(sbAccel));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try (FileWriter fw = new FileWriter(new File(classDir, "gravity.csv"), true)) {
-            fw.write(String.valueOf(sbGravity));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try (FileWriter fw = new FileWriter(new File(classDir, "gyro.csv"), true)) {
-            fw.write(String.valueOf(sbGyro));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        mHandlerAccel.post(new Runnable() {
+            @Override
+            public void run() {
+                try (FileWriter fw = new FileWriter(new File(classDir, "linear.csv"), true)) {
+                    fw.write(String.valueOf(sbAccel));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        mHandlerGravity.post(new Runnable() {
+            @Override
+            public void run() {
+                try (FileWriter fw = new FileWriter(new File(classDir, "gravity.csv"), true)) {
+                    fw.write(String.valueOf(sbGravity));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mHandlerGyro.post(new Runnable() {
+            @Override
+            public void run() {
+                try (FileWriter fw = new FileWriter(new File(classDir, "gyro.csv"), true)) {
+                    fw.write(String.valueOf(sbGyro));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         Toast.makeText(this, "Data saved successfully.", Toast.LENGTH_SHORT).show();
 
     }
@@ -325,10 +342,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void earlyStop(){
-        // Will rewrite 5 seconds which was at the tail of the whole data.
-        cntAccel = Math.max(0, cntAccel - 5000);
-        cntGravity = Math.max(0, cntGravity - 5000);
-        cntGyro = Math.max(0, cntGyro - 5000);
+        // Will rewrite 10 seconds which was at the tail of the whole data.
+        cntAccel = Math.max(0, cntAccel - 1000);
+        cntGravity = Math.max(0, cntGravity - 1000);
+        cntGyro = Math.max(0, cntGyro - 1000);
     }
 
     protected void setActClassClickable(boolean state){

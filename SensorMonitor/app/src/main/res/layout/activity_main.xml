@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <TextView
+                android:text="Data Collector"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/AppName"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+            <TextView
+                    android:text="Timestamp (ms)"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/labelTimestamp" android:layout_weight="1"/>
+            <TextView
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/valueTimestamp" android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:text="AccelX"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/labelAccelX" android:layout_weight="1"/>
+            <TextView
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/valueAccelX" android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:text="AccelY"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/labelAccelY" android:layout_weight="1"/>
+            <TextView
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/valueAccelY" android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:text="AccelZ"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/labelAccelZ" android:layout_weight="1"/>
+            <TextView
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/valueAccelZ" android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:text="GravityX"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/labelGravityX" android:layout_weight="1"/>
+            <TextView
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/valueGravityX" android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:text="GravityY"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/labelGravityY" android:layout_weight="1"/>
+            <TextView
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/valueGravityY" android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:text="GravityZ"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/labelGravityZ" android:layout_weight="1"/>
+            <TextView
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/valueGravityZ" android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:text="GyroX"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/labelGyroX" android:layout_weight="1"/>
+            <TextView
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/valueGyroX" android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:text="GyroY"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/labelGyroY" android:layout_weight="1"/>
+            <TextView
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/valueGyroY" android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:text="GryoZ"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/labelGyroZ" android:layout_weight="1"/>
+            <TextView
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/valueGyroZ" android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp">
+
+            <TextView
+                    android:text="Sampling Rate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/labelSamplerate" android:layout_weight="1"/>
+            <TextView
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/valueSamplerate" android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginBottom="0dp"
+                android:checkedButton="@id/buttonOther"
+                android:id="@+id/radiogroupActivity">
+            <RadioButton
+                    android:text="Other"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/buttonOther"/>
+            <RadioButton
+                    android:text="Walking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/buttonWalking"/>
+            <RadioButton
+                    android:text="Running"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/buttonRunning"/>
+            <RadioButton
+                    android:text="Standing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/buttonStanding"/>
+            <RadioButton
+                    android:text="Sitting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/buttonSitting"/>
+            <RadioButton
+                    android:text="Upstairs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/buttonUpstairs"/>
+            <RadioButton
+                    android:text="Downstairs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/buttonDownstairs"/>
+        </RadioGroup>
+        <Button
+                android:text="Start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/buttonStartStop"/>
+        <Button
+                android:text="Pause / Resume"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/buttonPauseResume"/>
+        <Button
+                android:text="Discard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/buttonDiscard"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

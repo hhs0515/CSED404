@@ -94,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
 
                     final int countdownDuration = 5;
                     setButtonClickable(false);
+                    mHandlerAccel.post(() -> wakeLock.acquire(30*60*1000L));
+                    mHandlerGravity.post(() -> wakeLock.acquire(30*60*1000L));
+                    mHandlerGyro.post(() -> wakeLock.acquire(30*60*1000L));
+                    wakeLock.acquire(30*60*1000L);
                     new CountDownTimer(countdownDuration * 1000, 5000) {
                         public void onTick(long millisUntilFinished) {
                             String countdownMessage = "Starting in 5 seconds...";
@@ -164,6 +168,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Enroll 3 sensors to Sensor Thread.
+     * @param classID Which type of activity is now being collected
+     */
     protected void startSensing(int classID){
         cntAccel = 0; cntGravity = 0; cntGyro = 0;
 
@@ -256,9 +264,14 @@ public class MainActivity extends AppCompatActivity {
         mSensorManager.registerListener(mAccelEventListener, mAccel, samplingRate, mHandlerAccel);
         mSensorManager.registerListener(mGravityEventListener, mGravity, samplingRate, mHandlerGravity);
         mSensorManager.registerListener(mGyroEventListener, mGyro, samplingRate, mHandlerGyro);
-        wakeLock.acquire(30*60*1000L /*30 minutes*/);
     }
 
+    /**
+     * 1. Unregister every event listener.
+     * 2. Release wakeLock
+     * 3. StringBuilder starts to concat data being collected as the interface.
+     * 4. Make (Append) data to the designated folder/file.
+     */
     @SuppressLint("DefaultLocale")
     protected void stopSensing() {
         if(!mSensingPause) earlyStop();
@@ -266,20 +279,12 @@ public class MainActivity extends AppCompatActivity {
         mSensorManager.unregisterListener(mAccelEventListener, mAccel);
         mSensorManager.unregisterListener(mGravityEventListener, mGravity);
         mSensorManager.unregisterListener(mGyroEventListener, mGyro);
+        mHandlerAccel.post(() -> { if (wakeLock.isHeld()) wakeLock.release(); });
+        mHandlerGravity.post(() -> { if (wakeLock.isHeld()) wakeLock.release(); });
+        mHandlerGyro.post(() -> { if (wakeLock.isHeld()) wakeLock.release(); });
         if (wakeLock.isHeld()) wakeLock.release();
 
-        // Data is moved to StringBuilder
         int activity_class = getActivityClass();
-        for (int i = 0; i < cntAccel; i++) {
-            sbAccel.append(String.format("%d,%d,%.9e,%.9e,%.9e\n", activity_class, tsAccel[i], datAccel[i][0], datAccel[i][1], datAccel[i][2]));
-        }
-        for(int i = 0; i < cntGravity; i++){
-            sbGravity.append(String.format("%d,%d,%.9e,%.9e,%.9e\n", activity_class, tsGravity[i], datGravity[i][0], datGravity[i][1], datGravity[i][2]));
-        }
-        for(int i = 0; i < cntGyro; i++){
-            sbGyro.append(String.format("%d,%d,%.9e,%.9e,%.9e\n", activity_class, tsGyro[i], datGyro[i][0], datGyro[i][1], datGyro[i][2]));
-        }
-
         // If no folder, create folder
         File classDir = new File(getFilesDir(), String.valueOf(activity_class));
         if (!classDir.exists()) {
@@ -289,47 +294,55 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 'Append' each data to the csv.
-        mHandlerAccel.post(new Runnable() {
-            @Override
-            public void run() {
-                try (FileWriter fw = new FileWriter(new File(classDir, "linear.csv"), true)) {
-                    fw.write(String.valueOf(sbAccel));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        mHandlerAccel.post(() -> {
+            // Data is moved to StringBuilder
+            for (int i = 0; i < cntAccel; i++) {
+                sbAccel.append(String.format("%d,%d,%.9e,%.9e,%.9e\n", activity_class, tsAccel[i], datAccel[i][0], datAccel[i][1], datAccel[i][2]));
             }
-        });
-        mHandlerGravity.post(new Runnable() {
-            @Override
-            public void run() {
-                try (FileWriter fw = new FileWriter(new File(classDir, "gravity.csv"), true)) {
-                    fw.write(String.valueOf(sbGravity));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            for(int i = 0; i < cntGravity; i++){
+                sbGravity.append(String.format("%d,%d,%.9e,%.9e,%.9e\n", activity_class, tsGravity[i], datGravity[i][0], datGravity[i][1], datGravity[i][2]));
             }
-        });
+            for(int i = 0; i < cntGyro; i++){
+                sbGyro.append(String.format("%d,%d,%.9e,%.9e,%.9e\n", activity_class, tsGyro[i], datGyro[i][0], datGyro[i][1], datGyro[i][2]));
+            }
 
-        mHandlerGyro.post(new Runnable() {
-            @Override
-            public void run() {
-                try (FileWriter fw = new FileWriter(new File(classDir, "gyro.csv"), true)) {
-                    fw.write(String.valueOf(sbGyro));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try (FileWriter fw = new FileWriter(new File(classDir, "linear.csv"), true)) {
+                fw.write(String.valueOf(sbAccel));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (FileWriter fw = new FileWriter(new File(classDir, "gravity.csv"), true)) {
+                fw.write(String.valueOf(sbGravity));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (FileWriter fw = new FileWriter(new File(classDir, "gyro.csv"), true)) {
+                fw.write(String.valueOf(sbGyro));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
 
-        Toast.makeText(this, "Data saved successfully.", Toast.LENGTH_SHORT).show();
-
+        new AlertDialog.Builder(this)
+                .setTitle("Saved Data")
+                .setMessage(String.format("Data saved successfully.\nAccel:%d\nGravity:%d\nGyro:%d",cntAccel, cntGravity, cntGyro))
+                .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {})
+                .show();
     }
 
+    /**
+     * Gets Activity class number by finding which child is clicked in the RadioGroup.
+     * @return Activity number, which is also the name of the folder.
+     */
     protected int getActivityClass() {
         RadioGroup radioGroup = findViewById(R.id.radiogroupActivity);
         return radioGroup.indexOfChild(findViewById(radioGroup.getCheckedRadioButtonId()));
     }
 
+    /**
+     * Remove file regarding selected activity.
+     * @param classID Activity class which will be discarded
+     */
     protected void discardData(int classID){
         File classDir = new File(getFilesDir(), String.valueOf(classID));
         File accelFile = new File(classDir, "linear.csv");
@@ -341,6 +354,9 @@ public class MainActivity extends AppCompatActivity {
         if(gyroFile.exists()) gyroFile.delete();
     }
 
+    /**
+     * Rewrite 10 seconds which was at the tail of the whole data by reducing cnt{SensorName}
+     */
     protected void earlyStop(){
         // Will rewrite 10 seconds which was at the tail of the whole data.
         cntAccel = Math.max(0, cntAccel - 1000);
@@ -348,8 +364,11 @@ public class MainActivity extends AppCompatActivity {
         cntGyro = Math.max(0, cntGyro - 1000);
     }
 
+    /**
+     * Set RadioGroup buttons (not) clickable to keep activity class uniform when we start sensing.
+     * @param state True to make activity class clickable, false otherwise.
+     */
     protected void setActClassClickable(boolean state){
-        // Set RadioGroup buttons (not) clickable to keep activity class uniform when we start sensing.
         findViewById(R.id.radiogroupActivity).setClickable(state);
         findViewById(R.id.buttonOther).setClickable(state);
         findViewById(R.id.buttonWalking).setClickable(state);
@@ -360,10 +379,20 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.buttonDownstairs).setClickable(state);
     }
 
+    /**
+     * Set 3 buttons below (not) clickable to use counter for late start as intended.
+     * @param state True to make buttons clickable, false otherwise.
+     */
     protected void setButtonClickable(boolean state){
-        // Set 3 buttons below (not) clickable to use counter for late start as intended.
+
         findViewById(R.id.buttonStartStop).setClickable(state);
         findViewById(R.id.buttonPauseResume).setClickable(state);
         findViewById(R.id.buttonDiscard).setClickable(state);
+    }
+
+
+    protected void onDestroy(){
+        super.onDestroy();
+
     }
 }

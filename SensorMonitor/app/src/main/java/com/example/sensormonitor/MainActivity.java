@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Get sensors : mAccel - Accelerometer, mGravity - Gravity, mGyro - Gyroscope
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mAccel = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mAccel = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         mGyro = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
@@ -175,13 +175,13 @@ public class MainActivity extends AppCompatActivity {
     protected void startSensing(int classID){
         cntAccel = 0; cntGravity = 0; cntGyro = 0;
 
-        // Accelerometer
+        // Linear Accelerometer
         mAccelEventListener = new SensorEventListener() {
             long ts = 0; long tsPast = 0;
             @SuppressLint("DefaultLocale")
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
-                if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                if (sensorEvent.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
                     if (!mSensingPause){
                         tsPast = ts;
                         ts = sensorEvent.timestamp;

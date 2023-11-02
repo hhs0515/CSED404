@@ -3,19 +3,23 @@ package com.example.sensormonitor;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.*;
-import android.util.Log;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.EventListener;
@@ -45,6 +49,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String packageName = getPackageName();
+        // WakeLock setup.
+        powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK,"SensorMonitor:WAKELOCK");
+
         //Get sensors : mAccel - Accelerometer, mGravity - Gravity, mGyro - Gyroscope
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccel = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -70,11 +80,6 @@ public class MainActivity extends AppCompatActivity {
         datAccel = new float[200000][3];
         datGravity = new float[200000][3];
         datGyro = new float[200000][3];
-
-        // WakeLock setup.
-        powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(
-                        PowerManager.PARTIAL_WAKE_LOCK,"SensorMonitor:WAKELOCK");
 
         // Start-Stop button Click event listener.
         findViewById(R.id.buttonStartStop).setOnClickListener(new View.OnClickListener() {
@@ -388,11 +393,5 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.buttonStartStop).setClickable(state);
         findViewById(R.id.buttonPauseResume).setClickable(state);
         findViewById(R.id.buttonDiscard).setClickable(state);
-    }
-
-
-    protected void onDestroy(){
-        super.onDestroy();
-
     }
 }

@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
         float[][] windowAccel = new float[200][3];
 
         float[] features = new float[36];
+        final String[] act = {"Others", "Walking", "Running", "Standing", "Sitting", "Upstairs", "Downstairs"};
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             mHandlerClassifier.postDelayed(new Runnable() {
@@ -207,10 +208,11 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     int result = (int) svm.svm_predict(model, convertSvmNode(features));
+
                     runOnUiThread(() -> {
                         TextView editText = findViewById(R.id.resultView);
-                        editText.setText(((int) System.currentTimeMillis() + ": " + result));
-                        volleyPost(result);
+                        editText.setText(((int) System.currentTimeMillis() + ": " + act[result]));
+                        volleyPost(act[result]);
                         Log.d("X Y Z:", features[0] +" "+ features[1] +" "+features[2]);
                     });
                     mHandlerClassifier.postDelayed(this, 1000);
@@ -332,39 +334,14 @@ public class MainActivity extends AppCompatActivity {
         return nodes;
     }
 
-    public void volleyPost(int activityClass){
-        String postUrl = "http://172.30.1.72:5000/post_activity";
+    public void volleyPost(String action){
+        String postUrl = "URL/post_activity";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         JSONObject postData = new JSONObject();
 
-        String act = "No action Yet";
-        switch (activityClass){
-            case 0:
-                act = "Others";
-                break;
-            case 1:
-                act = "Walking";
-                break;
-            case 2:
-                act = "Running";
-                break;
-            case 3:
-                act = "Standing";
-                break;
-            case 4:
-                act = "Sitting";
-                break;
-            case 5:
-                act = "Upstairs";
-                break;
-            case 6:
-                act = "Downstairs";
-                break;
-        }
-
         try {
-            postData.put("activity", act);
+            postData.put("activity", action);
 
         } catch (JSONException e) {
             e.printStackTrace();
